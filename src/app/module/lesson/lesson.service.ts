@@ -32,9 +32,9 @@ const getAllLessons = async (query: Record<string, unknown>) => {
     .fieldFilteringQuery()
     .populateQuery([])
 
-
-    
   const result = await lessonQuery?.queryModel
+
+
   const total = await Lesson.countDocuments(lessonQuery?.queryModel.getFilter())
   return { data: result, total }
 }
