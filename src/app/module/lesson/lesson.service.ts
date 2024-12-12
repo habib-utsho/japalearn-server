@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes'
 
 const insertLessonToDb = async (payload: TLesson) => {
   const existingLesson = await Lesson.findOne({ name: payload.name })
-  
+
   if (existingLesson) {
     throw new AppError(StatusCodes.CONFLICT, 'Lesson name already exists')
   }
@@ -32,6 +32,8 @@ const getAllLessons = async (query: Record<string, unknown>) => {
     .fieldFilteringQuery()
     .populateQuery([])
 
+
+    
   const result = await lessonQuery?.queryModel
   const total = await Lesson.countDocuments(lessonQuery?.queryModel.getFilter())
   return { data: result, total }
