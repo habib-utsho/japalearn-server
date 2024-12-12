@@ -3,12 +3,12 @@ import { TUser } from './user.interface'
 import User from './user.model'
 import AppError from '../../errors/appError'
 import mongoose from 'mongoose'
-import Lesson from '../lesson/lesson.model'
 import { JwtPayload } from 'jsonwebtoken'
 import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
 import QueryBuilder from '../../builder/QueryBuilder'
 import { userSearchableFields } from './user.constant'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const insertUserToDb = async (file: any, payload: TUser) => {
   const session = await mongoose.startSession()
 
@@ -22,12 +22,13 @@ const insertUserToDb = async (file: any, payload: TUser) => {
         'Email is already exist. Try with different email!',
       )
     }
-    const cloudinaryRes = await uploadImgToCloudinary(
-      `${Date.now()}-${payload.name}`,
-      file.path,
-    )
-    if (cloudinaryRes) {
-      payload.profileImg = cloudinaryRes.secure_url
+
+    let cloudinaryRes
+    if (file.path) {
+      cloudinaryRes = await uploadImgToCloudinary(
+        `${Date.now()}-${payload.name}`,
+        file.path,
+      )
     }
 
     const userData: Partial<TUser> = {
@@ -49,6 +50,7 @@ const insertUserToDb = async (file: any, payload: TUser) => {
     await session.commitTransaction()
     await session.endSession()
     return user[0]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     await session.abortTransaction()
     await session.endSession()

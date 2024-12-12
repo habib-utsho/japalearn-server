@@ -20,6 +20,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const uploadImgToCloudinary_1 = require("../../utils/uploadImgToCloudinary");
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const user_constant_1 = require("./user.constant");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const insertUserToDb = (file, payload) => __awaiter(void 0, void 0, void 0, function* () {
     const session = yield mongoose_1.default.startSession();
     try {
@@ -28,9 +29,9 @@ const insertUserToDb = (file, payload) => __awaiter(void 0, void 0, void 0, func
         if (alreadyExistEmail) {
             throw new appError_1.default(http_status_codes_1.StatusCodes.BAD_REQUEST, 'Email is already exist. Try with different email!');
         }
-        const cloudinaryRes = yield (0, uploadImgToCloudinary_1.uploadImgToCloudinary)(`${Date.now()}-${payload.name}`, file.path);
-        if (cloudinaryRes) {
-            payload.profileImg = cloudinaryRes.secure_url;
+        let cloudinaryRes;
+        if (file.path) {
+            cloudinaryRes = yield (0, uploadImgToCloudinary_1.uploadImgToCloudinary)(`${Date.now()}-${payload.name}`, file.path);
         }
         const userData = {
             name: payload.name,
@@ -50,6 +51,7 @@ const insertUserToDb = (file, payload) => __awaiter(void 0, void 0, void 0, func
         yield session.commitTransaction();
         yield session.endSession();
         return user[0];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }
     catch (err) {
         yield session.abortTransaction();

@@ -30,9 +30,11 @@ const job = new cron_1.CronJob('*/10 * * * *', () => {
     axiosInstance
         .get('https://japalearn-server.onrender.com/api/v1')
         .then((response) => {
+        // eslint-disable-next-line no-console
         console.log('😀🎉 Self-ping successful:', response.status);
     })
         .catch((error) => {
+        // eslint-disable-next-line no-console
         console.error('😡 Self-ping failed:', error.message);
     });
 });
