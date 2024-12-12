@@ -34,7 +34,6 @@ const getAllLessons = async (query: Record<string, unknown>) => {
 
   const result = await lessonQuery?.queryModel
 
-
   const total = await Lesson.countDocuments(lessonQuery?.queryModel.getFilter())
   return { data: result, total }
 }
