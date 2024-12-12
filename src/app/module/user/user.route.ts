@@ -19,6 +19,13 @@ router.post(
   userController.insertUser,
 )
 
+router.delete('/:id', auth(USER_ROLE.ADMIN), userController.deleteUserById)
+router.patch(
+  '/toggle-role/:id',
+  auth(USER_ROLE.ADMIN),
+  userController.toggleUserRoleById,
+)
+
 router.get('/me', auth(USER_ROLE.ADMIN, USER_ROLE.USER), userController.getMe)
 
 router.get('/', userController.getAllUsers)

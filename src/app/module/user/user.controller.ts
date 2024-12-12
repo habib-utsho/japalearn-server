@@ -44,6 +44,29 @@ const getUserById: RequestHandler = catchAsync(async (req, res) => {
   })
 })
 
+const deleteUserById = catchAsync(async (req, res) => {
+  const user = await userServices.deleteUserById(req.params.id)
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
+  }
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: 'User is deleted successfully!',
+    data: user,
+  })
+})
+const toggleUserRoleById = catchAsync(async (req, res) => {
+  const user = await userServices.toggleUserRoleById(req.params.id)
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found!')
+  }
+  sendResponse(res, StatusCodes.OK, {
+    success: true,
+    message: `This user is now ${user.role}!`,
+    data: user,
+  })
+})
+
 const getMe: RequestHandler = catchAsync(async (req, res) => {
   const user = await userServices.getMe(req.user as JwtPayload)
   if (!user) {
@@ -59,6 +82,8 @@ const getMe: RequestHandler = catchAsync(async (req, res) => {
 export const userController = {
   insertUser,
   getAllUsers,
+  deleteUserById,
+  toggleUserRoleById,
   getUserById,
   getMe,
 }

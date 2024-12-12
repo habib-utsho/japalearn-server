@@ -16,14 +16,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const UserSchema = new mongoose_1.Schema({
+    name: { type: String, required: [true, 'Name is required'] },
     email: { type: String, unique: true }, //FK
     password: { type: String, required: [true, 'Password is required'] },
     needsPasswordChange: { type: Boolean, default: false },
     role: {
         type: String,
         enum: ['admin', 'user'],
+        default: 'user',
         required: true,
     },
+    profileImg: { type: String },
     status: { type: String, enum: ['active', 'inactive'], default: 'active' },
     isDeleted: { type: Boolean, default: false },
 }, { timestamps: true });

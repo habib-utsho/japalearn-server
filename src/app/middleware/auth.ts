@@ -55,7 +55,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(StatusCodes.FORBIDDEN, 'This user is not active!')
     }
 
-    if (requiredRoles && !requiredRoles.includes(role)) {
+    if (requiredRoles?.length && !requiredRoles.includes(role)) {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized!')
     }
 

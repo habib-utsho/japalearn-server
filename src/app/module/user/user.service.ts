@@ -3,7 +3,7 @@ import { TUser } from './user.interface'
 import User from './user.model'
 import AppError from '../../errors/appError'
 import mongoose from 'mongoose'
-import Batch from '../batch/batch.model'
+import Lesson from '../lesson/lesson.model'
 import { JwtPayload } from 'jsonwebtoken'
 import { uploadImgToCloudinary } from '../../utils/uploadImgToCloudinary'
 import QueryBuilder from '../../builder/QueryBuilder'
@@ -31,10 +31,11 @@ const insertUserToDb = async (file: any, payload: TUser) => {
     }
 
     const userData: Partial<TUser> = {
+      name: payload.name,
       email: payload.email,
       password: payload.password || process.env.STUDENT_DEFAULT_PASSWORD,
       needsPasswordChange: true,
-      role: 'user',
+      role: payload.role || 'user',
       profileImg: cloudinaryRes
         ? cloudinaryRes.secure_url
         : 'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png',
@@ -68,8 +69,29 @@ const getAllUser = async (query: Record<string, unknown>) => {
     .populateQuery([])
 
   const result = await userQuery?.queryModel
-  const total = await Batch.countDocuments(userQuery?.queryModel.getFilter())
+  const total = await User.countDocuments(userQuery?.queryModel.getFilter())
   return { data: result, total }
+}
+
+const toggleUserRoleById = async (id: string) => {
+  const user = await User.findById(id)
+  if (!user) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'User is not found!')
+  }
+
+  user.role = user.role === 'admin' ? 'user' : 'admin'
+  await user.save()
+
+  return user
+}
+
+const deleteUserById = async (id: string) => {
+  const user = await User.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true },
+  ).select('-__v')
+  return user
 }
 
 const getSingleUserById = async (id: string) => {
@@ -78,7 +100,7 @@ const getSingleUserById = async (id: string) => {
 }
 
 const getMe = async (payload: JwtPayload) => {
-  const result = await User.findById({ id: payload.email }).select('-__v')
+  const result = await User.findOne({ email: payload.email }).select('-__v')
 
   return result
 }
@@ -86,6 +108,8 @@ const getMe = async (payload: JwtPayload) => {
 export const userServices = {
   insertUserToDb,
   getAllUser,
+  deleteUserById,
+  toggleUserRoleById,
   getSingleUserById,
   getMe,
 }

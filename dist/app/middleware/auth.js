@@ -52,6 +52,7 @@ const auth = (...requiredRoles) => {
         if (userStatus === 'inactive') {
             throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'This user is not active!');
         }
+        console.log({ bearerToken, requiredRoles, role, email }, requiredRoles.includes(role), 'hiii');
         if (requiredRoles && !requiredRoles.includes(role)) {
             throw new appError_1.default(http_status_codes_1.StatusCodes.UNAUTHORIZED, 'You are not authorized!');
         }

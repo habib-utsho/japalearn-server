@@ -14,8 +14,8 @@ const createUserZodSchema = zod_1.z.object({
         .min(8, 'Password must be at least 8 characters long')
         .regex(passwordRegex, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
     needsPasswordChange: zod_1.z.boolean().optional(),
-    role: zod_1.z.enum(['admin', 'user']),
-    status: zod_1.z.enum(['active', 'inactive']),
+    role: zod_1.z.enum(['admin', 'user']).default('user'),
+    status: zod_1.z.enum(['active', 'inactive']).optional(),
     isDeleted: zod_1.z.boolean().optional(),
 });
 exports.createUserZodSchema = createUserZodSchema;

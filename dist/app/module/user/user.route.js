@@ -18,6 +18,8 @@ router.post('/', uploadImgToCloudinary_1.upload.single('file'), (req, res, next)
     req.body = JSON.parse((_a = req.body) === null || _a === void 0 ? void 0 : _a.data);
     next();
 }, (0, zodValidateHandler_1.default)(user_validation_1.createUserZodSchema), user_controller_1.userController.insertUser);
+router.delete('/:id', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), user_controller_1.userController.deleteUserById);
+router.patch('/toggle-role/:id', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN), user_controller_1.userController.toggleUserRoleById);
 router.get('/me', (0, auth_1.default)(user_constant_1.USER_ROLE.ADMIN, user_constant_1.USER_ROLE.USER), user_controller_1.userController.getMe);
 router.get('/', user_controller_1.userController.getAllUsers);
 router.get('/:id', user_controller_1.userController.getUserById);

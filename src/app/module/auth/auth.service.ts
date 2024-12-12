@@ -25,6 +25,7 @@ const login = async (loginInfo: TLoginUser) => {
     role: user.role,
   }
 
+
   const accessToken = jwt.sign(
     jwtPayload,
     process.env.JWT_ACCESS_SECRET as string,

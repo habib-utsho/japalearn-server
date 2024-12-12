@@ -51,6 +51,28 @@ const getUserById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: user,
     });
 }));
+const deleteUserById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_service_1.userServices.deleteUserById(req.params.id);
+    if (!user) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found!');
+    }
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: 'User is deleted successfully!',
+        data: user,
+    });
+}));
+const toggleUserRoleById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_service_1.userServices.toggleUserRoleById(req.params.id);
+    if (!user) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User not found!');
+    }
+    (0, sendResponse_1.default)(res, http_status_codes_1.StatusCodes.OK, {
+        success: true,
+        message: `This user is now ${user.role}!`,
+        data: user,
+    });
+}));
 const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_service_1.userServices.getMe(req.user);
     if (!user) {
@@ -65,6 +87,8 @@ const getMe = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
 exports.userController = {
     insertUser,
     getAllUsers,
+    deleteUserById,
+    toggleUserRoleById,
     getUserById,
     getMe,
 };

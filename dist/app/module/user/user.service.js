@@ -17,7 +17,6 @@ const http_status_codes_1 = require("http-status-codes");
 const user_model_1 = __importDefault(require("./user.model"));
 const appError_1 = __importDefault(require("../../errors/appError"));
 const mongoose_1 = __importDefault(require("mongoose"));
-const batch_model_1 = __importDefault(require("../batch/batch.model"));
 const uploadImgToCloudinary_1 = require("../../utils/uploadImgToCloudinary");
 const QueryBuilder_1 = __importDefault(require("../../builder/QueryBuilder"));
 const user_constant_1 = require("./user.constant");
@@ -34,10 +33,11 @@ const insertUserToDb = (file, payload) => __awaiter(void 0, void 0, void 0, func
             payload.profileImg = cloudinaryRes.secure_url;
         }
         const userData = {
+            name: payload.name,
             email: payload.email,
             password: payload.password || process.env.STUDENT_DEFAULT_PASSWORD,
             needsPasswordChange: true,
-            role: 'user',
+            role: payload.role || 'user',
             profileImg: cloudinaryRes
                 ? cloudinaryRes.secure_url
                 : 'https://e7.pngegg.com/pngimages/799/987/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png',
@@ -66,20 +66,35 @@ const getAllUser = (query) => __awaiter(void 0, void 0, void 0, function* () {
         .fieldFilteringQuery()
         .populateQuery([]);
     const result = yield (userQuery === null || userQuery === void 0 ? void 0 : userQuery.queryModel);
-    const total = yield batch_model_1.default.countDocuments(userQuery === null || userQuery === void 0 ? void 0 : userQuery.queryModel.getFilter());
+    const total = yield user_model_1.default.countDocuments(userQuery === null || userQuery === void 0 ? void 0 : userQuery.queryModel.getFilter());
     return { data: result, total };
+});
+const toggleUserRoleById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(id);
+    if (!user) {
+        throw new appError_1.default(http_status_codes_1.StatusCodes.FORBIDDEN, 'User is not found!');
+    }
+    user.role = user.role === 'admin' ? 'user' : 'admin';
+    yield user.save();
+    return user;
+});
+const deleteUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findByIdAndUpdate(id, { isDeleted: true }, { new: true }).select('-__v');
+    return user;
 });
 const getSingleUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_model_1.default.findById(id).select('-__v');
     return user;
 });
 const getMe = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_model_1.default.findById({ id: payload.email }).select('-__v');
+    const result = yield user_model_1.default.findOne({ email: payload.email }).select('-__v');
     return result;
 });
 exports.userServices = {
     insertUserToDb,
     getAllUser,
+    deleteUserById,
+    toggleUserRoleById,
     getSingleUserById,
     getMe,
 };
