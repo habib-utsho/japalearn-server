@@ -15,12 +15,8 @@ router.post(
   zodValidateHandler(createVocabularyZodSchema),
   vocabularyController.insertVocabulary,
 )
-router.get('/', auth(USER_ROLE.ADMIN), vocabularyController.getAllVocabulary)
-router.get(
-  '/:id',
-  auth(USER_ROLE.ADMIN),
-  vocabularyController.getVocabularyById,
-)
+router.get('/', vocabularyController.getAllVocabulary)
+router.get('/:id', vocabularyController.getVocabularyById)
 router.patch(
   '/:id',
   auth(USER_ROLE.ADMIN),

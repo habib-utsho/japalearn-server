@@ -13,8 +13,8 @@ router.post(
   zodValidateHandler(createLessonZodSchema),
   lessonController.insertLesson,
 )
-router.get('/', auth(USER_ROLE.ADMIN), lessonController.getAllLessons)
-router.get('/:lessonNumber', auth(USER_ROLE.ADMIN), lessonController.getLessonById)
+router.get('/', lessonController.getAllLessons)
+router.get('/:lessonNumber', lessonController.getLessonById)
 router.patch(
   '/:id',
   auth(USER_ROLE.ADMIN),

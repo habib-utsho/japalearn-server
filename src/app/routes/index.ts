@@ -4,6 +4,7 @@ import { authRouter } from '../module/auth/auth.route'
 import { lessonRouter } from '../module/lesson/lesson.route'
 import { vocabularyRouter } from '../module/vocabulary/vocabulary.route'
 import { statsRouter } from '../module/stats/stats.route'
+import { tutorialRouter } from '../module/tutorial/tutorial.route'
 
 const router = Router()
 const routes = [
@@ -26,6 +27,10 @@ const routes = [
   {
     path: '/stats',
     route: statsRouter,
+  },
+  {
+    path: '/tutorial',
+    route: tutorialRouter,
   },
 ]
 
