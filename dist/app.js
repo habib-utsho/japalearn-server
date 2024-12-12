@@ -18,26 +18,26 @@ require("dotenv/config");
 const errHandler_1 = require("./app/middleware/errHandler");
 const routes_1 = __importDefault(require("./app/routes"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
-// import axios from 'axios'
-// import { CronJob } from 'cron'
+const axios_1 = __importDefault(require("axios"));
+const cron_1 = require("cron");
 const app = (0, express_1.default)();
 // // Create an axios instance with a longer timeout
-// const axiosInstance = axios.create({
-//   timeout: 30000, // 30 seconds timeout
-// })
-// // Set up a cron job to ping the server every 10 minutes
-// const job = new CronJob('*/10 * * * *', () => {
-//   axiosInstance
-//     .get('https://utshofolio-server.onrender.com/api/v1')
-//     .then((response) => {
-//       console.log('😀🎉 Self-ping successful:', response.status)
-//     })
-//     .catch((error) => {
-//       console.error('😡 Self-ping failed:', error.message)
-//     })
-// })
+const axiosInstance = axios_1.default.create({
+    timeout: 30000, // 30 seconds timeout
+});
+// Set up a cron job to ping the server every 10 minutes
+const job = new cron_1.CronJob('*/10 * * * *', () => {
+    axiosInstance
+        .get('https://japalearn-server.onrender.com/api/v1')
+        .then((response) => {
+        console.log('😀🎉 Self-ping successful:', response.status);
+    })
+        .catch((error) => {
+        console.error('😡 Self-ping failed:', error.message);
+    });
+});
 // // Start the cron job
-// job.start()
+job.start();
 app.get('/api/v1', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.send('Japalearn home route!');
 }));
