@@ -7,9 +7,11 @@ import { StatusCodes } from 'http-status-codes'
 
 const insertLessonToDb = async (payload: TLesson) => {
   const existingLesson = await Lesson.findOne({ name: payload.name })
+  
   if (existingLesson) {
     throw new AppError(StatusCodes.CONFLICT, 'Lesson name already exists')
   }
+
   const existingLessonNumber = await Lesson.findOne({ number: payload.number })
   if (existingLessonNumber) {
     throw new AppError(StatusCodes.CONFLICT, 'Lesson number already exists')
